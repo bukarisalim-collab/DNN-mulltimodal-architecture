@@ -51,9 +51,10 @@ def resolve_default_data_dir() -> Path:
     candidates = [
         script_dir,
         script_dir.parent,
+        script_dir.parent / "myntradataset",
     ]
     for path in candidates:
-        if (path / "IMDB_four_genre_larger_plot_description.csv").exists():
+        if (path / "styles.csv").exists():
             return path
     return script_dir # default fallback
 
@@ -101,12 +102,12 @@ class MMIMDbLikeDataset(Dataset):
         self.data_dir = data_dir
         self.backbone = backbone
         
-        self.csv_path = data_dir / "IMDB_four_genre_larger_plot_description.csv"
-        self.image_base_dir = data_dir / "IMDB four_genre_posters"
+        self.csv_path = data_dir / "styles.csv"
+        self.image_base_dir = data_dir / "images"
         
         if not self.csv_path.exists():
-            raise FileNotFoundError(f"Could not find IMDB_four_genre_larger_plot_description.csv in: {data_dir}")
-        self.is_imdb = True
+            raise FileNotFoundError(f"Could not find styles.csv in: {data_dir}")
+        self.is_imdb = False
 
         df = pd.read_csv(self.csv_path, on_bad_lines="skip")
         id_col = _pick_column(list(df.columns), ["id", "image_id", "movie_id", "imdbid"])
